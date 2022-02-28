@@ -1128,7 +1128,7 @@
 		};
 
 		remoteproc_slpi: remoteproc@2400000 {
-			compatible = "qcom,sm8350-slpi-pas";
+			compatible = "qcom,sm8450-slpi-pas";
 			reg = <0 0x02400000 0 0x4000>;
 
 			interrupts-extended = <&pdc 9 IRQ_TYPE_LEVEL_HIGH>,
