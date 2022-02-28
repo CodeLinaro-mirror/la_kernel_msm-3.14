@@ -171,7 +171,7 @@ static struct clk_alpha_pll_postdiv cam_cc_pll1_out_even = {
 	},
 };
 
-static const struct alpha_pll_config cam_cc_pll2_config = {
+static struct alpha_pll_config cam_cc_pll2_config = {
 	.l = 0x32,
 	.alpha = 0x0,
 	.config_ctl_val = 0x90008820,
@@ -877,6 +877,15 @@ static const struct freq_tbl ftbl_cam_cc_ife_0_clk_src[] = {
 	{ }
 };
 
+static const struct freq_tbl ftbl_cam_cc_ife_0_clk_src_es[] = {
+	F(19200000, P_BI_TCXO, 1, 0, 0),
+	F(432000000, P_CAM_CC_PLL3_OUT_EVEN, 1, 0, 0),
+	F(594000000, P_CAM_CC_PLL3_OUT_EVEN, 1, 0, 0),
+	F(675000000, P_CAM_CC_PLL3_OUT_EVEN, 1, 0, 0),
+	F(785000000, P_CAM_CC_PLL3_OUT_EVEN, 1, 0, 0),
+	{ }
+};
+
 static struct clk_rcg2 cam_cc_ife_0_clk_src = {
 	.cmd_rcgr = 0x11018,
 	.mnd_width = 0,
@@ -901,6 +910,15 @@ static const struct freq_tbl ftbl_cam_cc_ife_1_clk_src[] = {
 	{ }
 };
 
+static const struct freq_tbl ftbl_cam_cc_ife_1_clk_src_es[] = {
+	F(19200000, P_BI_TCXO, 1, 0, 0),
+	F(432000000, P_CAM_CC_PLL4_OUT_EVEN, 1, 0, 0),
+	F(594000000, P_CAM_CC_PLL4_OUT_EVEN, 1, 0, 0),
+	F(675000000, P_CAM_CC_PLL4_OUT_EVEN, 1, 0, 0),
+	F(785000000, P_CAM_CC_PLL4_OUT_EVEN, 1, 0, 0),
+	{ }
+};
+
 static struct clk_rcg2 cam_cc_ife_1_clk_src = {
 	.cmd_rcgr = 0x12018,
 	.mnd_width = 0,
@@ -921,6 +939,14 @@ static const struct freq_tbl ftbl_cam_cc_ife_2_clk_src[] = {
 	F(594000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
 	F(675000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
 	F(727000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
+	{ }
+};
+
+static const struct freq_tbl ftbl_cam_cc_ife_2_clk_src_es[] = {
+	F(432000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
+	F(594000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
+	F(675000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
+	F(785000000, P_CAM_CC_PLL5_OUT_EVEN, 1, 0, 0),
 	{ }
 };
 
@@ -1171,6 +1197,14 @@ static const struct freq_tbl ftbl_cam_cc_sfe_0_clk_src[] = {
 	{ }
 };
 
+static const struct freq_tbl ftbl_cam_cc_sfe_0_clk_src_es[] = {
+	F(432000000, P_CAM_CC_PLL6_OUT_EVEN, 1, 0, 0),
+	F(594000000, P_CAM_CC_PLL6_OUT_EVEN, 1, 0, 0),
+	F(675000000, P_CAM_CC_PLL6_OUT_EVEN, 1, 0, 0),
+	F(785000000, P_CAM_CC_PLL6_OUT_EVEN, 1, 0, 0),
+	{ }
+};
+
 static struct clk_rcg2 cam_cc_sfe_0_clk_src = {
 	.cmd_rcgr = 0x13064,
 	.mnd_width = 0,
@@ -1191,6 +1225,14 @@ static const struct freq_tbl ftbl_cam_cc_sfe_1_clk_src[] = {
 	F(594000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
 	F(675000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
 	F(727000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
+	{ }
+};
+
+static const struct freq_tbl ftbl_cam_cc_sfe_1_clk_src_es[] = {
+	F(432000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
+	F(594000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
+	F(675000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
+	F(785000000, P_CAM_CC_PLL7_OUT_EVEN, 1, 0, 0),
 	{ }
 };
 
@@ -2820,6 +2862,7 @@ static struct qcom_cc_desc cam_cc_sm8450_desc = {
 
 static const struct of_device_id cam_cc_sm8450_match_table[] = {
 	{ .compatible = "qcom,sm8450-camcc" },
+	{ .compatible = "qcom,sm8450-camcc-es" },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, cam_cc_sm8450_match_table);
@@ -2827,6 +2870,15 @@ MODULE_DEVICE_TABLE(of, cam_cc_sm8450_match_table);
 static int cam_cc_sm8450_probe(struct platform_device *pdev)
 {
 	struct regmap *regmap;
+
+	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8450-camcc-es")) {
+		cam_cc_pll2_config.config_ctl_val = 0x90008830;
+		cam_cc_ife_0_clk_src.freq_tbl = ftbl_cam_cc_ife_0_clk_src_es;
+		cam_cc_ife_1_clk_src.freq_tbl = ftbl_cam_cc_ife_1_clk_src_es;
+		cam_cc_ife_2_clk_src.freq_tbl = ftbl_cam_cc_ife_2_clk_src_es;
+		cam_cc_sfe_0_clk_src.freq_tbl = ftbl_cam_cc_sfe_0_clk_src_es;
+		cam_cc_sfe_1_clk_src.freq_tbl = ftbl_cam_cc_sfe_1_clk_src_es;
+	}
 
 	regmap = qcom_cc_map(pdev, &cam_cc_sm8450_desc);
 	if (IS_ERR(regmap))
